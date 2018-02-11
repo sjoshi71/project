@@ -1,0 +1,19 @@
+Software Code For Analytic stream job query 
+
+SELECT System.Timestamp AS WindowEnd, COUNT(*) AS FraudulentCalls
+                                                INTO "fraudstreamoutput"
+                                                FROM "fraudstream" CS1 TIMESTAMP BY CallRecTime
+                                                JOIN "fraudstream" CS2 TIMESTAMP BY CallRecTime
+                                                ON CS1.CallingIMSI = CS2.CallingIMSI
+                                                AND DATEDIFF(ss, CS1, CS2) BETWEEN 1 AND 5
+                                                WHERE CS1.SwitchNum != CS2.SwitchNum
+                                                GROUP BY TumblingWindow(Duration(second, 1))
+                                                
+Software Code date_dim table in  PowerBI desktop 
+
+Date_dim = ADDCOLUMNS ( CALENDAR (DATE(2000,1,1), DATE(2025,12,31)), "DateAsInteger", 
+FORMAT ( [Date], "YYYYMMDD" ), "Year", YEAR ( [Date] ), "MonthNo", FORMAT ( [Date], "MM" ), "YearMonthNo", FORMAT ( [Date], "YYYY/MM" ), 
+"YearMonth", FORMAT ( [Date], "YYYY/mmm" ),
+"MonthShort", FORMAT ( [Date], "mmm" ), "MonthLong", FORMAT ( [Date], "mmmm" ), "WeekNo", WEEKDAY ( [Date] ), "WeekDay",
+FORMAT ( [Date], "dddd" ), "WeekDayShort", FORMAT ( [Date], "dddd" ), "Quarter", "Q" & FORMAT ( [Date], "Q" ), "YearQuarter",
+FORMAT ( [Date], "YYYY" ) & "/Q" & FORMAT ( [Date], "Q" ))
